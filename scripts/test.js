@@ -1,6 +1,7 @@
 let ball = document.querySelector('.ball');
 let plate = document.querySelector('.plate');
 
+let startGameFlag = false;
 let pauseFlag = false;
 
 let positivityX;
@@ -15,53 +16,65 @@ let ballSpeed = 12;
 let ySpeed = ballSpeed;
 let xSpeed = 0;
 
-let ballYCord = parseInt(ball.offsetTop);
-let ballXCord = parseInt(ball.offsetLeft);
+let ballYCord = ball.offsetTop;
+let ballXCord = ball.offsetLeft;
 let ballCenter = {
     x : ballXCord + Math.trunc(ball.clientWidth / 2),
     y : ballYCord + Math.trunc(ball.clientHeight / 2),
 }
 
+
+let playersDataBase = {};
+let playername;
+let preventScores;
+let actualScores;
+let screen1;
+
+let lifes = document.querySelector('.lifes');
+
 function plateMotion(event){ // логику подсмотрел
-    if(pressedButton){
-        return;
-    }
-
-    pressedButton = true;
-    let plateCoord = plate.offsetLeft;
-    if(event.code == 'ArrowLeft'){
-        if(plateCoord <= 2*plateSpeed){
-            ;
-        }else{
-            plate.style.left = `${plateCoord - plateSpeed}px`;
-        }    
-    }else if(event.code == 'ArrowRight'){
-        if(plateCoord >= 850 - 2*plateSpeed){
-            ;
-        }else{
-            plate.style.left = `${plateCoord + plateSpeed}px`;
-        }    
-    }
-
-
-    pressedBtnMotion = setInterval(function(){
+    if(!pauseFlag){
+        if(pressedButton){
+            return;
+        }
+    
+        pressedButton = true;
+        let plateCoord = plate.offsetLeft;
         if(event.code == 'ArrowLeft'){
             if(plateCoord <= 2*plateSpeed){
-                clearInterval(pressedBtnMotion);
+                ;
             }else{
-                plateCoord = plate.offsetLeft;
                 plate.style.left = `${plateCoord - plateSpeed}px`;
             }    
         }else if(event.code == 'ArrowRight'){
             if(plateCoord >= 850 - 2*plateSpeed){
-                clearInterval(pressedBtnMotion);
+                ;
             }else{
-                plateCoord = plate.offsetLeft;
                 plate.style.left = `${plateCoord + plateSpeed}px`;
             }    
-        }      
-    }, 40);
-}
+        }
+    
+    
+        pressedBtnMotion = setInterval(function(){
+            if(event.code == 'ArrowLeft'){
+                if(plateCoord <= 2*plateSpeed){
+                    clearInterval(pressedBtnMotion);
+                }else{
+                    plateCoord = plate.offsetLeft;
+                    plate.style.left = `${plateCoord - plateSpeed}px`;
+                }    
+            }else if(event.code == 'ArrowRight'){
+                if(plateCoord >= 850 - 2*plateSpeed){
+                    clearInterval(pressedBtnMotion);
+                }else{
+                    plateCoord = plate.offsetLeft;
+                    plate.style.left = `${plateCoord + plateSpeed}px`;
+                }    
+            }      
+        }, 40);
+    
+    }
+    }
 
 
 function stopPlateMotion(){
@@ -180,19 +193,45 @@ function main(){
     ball.style.left = `${ballXCord + xSpeed}px`;
 }
 
+//==========================================================================================================================
+//==========================================================================================================================
+//==========================================================================================================================
+//==========================================================================================================================
+
+let player = document.getElementById('playernameForm');
+player.addEventListener('submit', function(event){
+    event.preventDefault();
+    playername = document.getElementById('username').value;
+    if(playername in playersDataBase){
+        preventScores = playersDataBase[playername];
+        console.log("Такой пользователь уже играл.")
+        console.log(playersDataBase);
+    }else{
+        playersDataBase[playername]=0;
+        console.log("Это новый пользователь.")
+        console.log(playersDataBase);
+    }
+    actualScores=0;
+    screen1 = document.querySelector('.startScreen');
+    screen1.style.left = `${-9999}px`;
+
+})
+
 
 document.addEventListener('keydown', plateMotion);
 document.addEventListener('keyup', stopPlateMotion);
-let idForPause = setInterval(main, 25);
+if(startGameFlag){
+    let idForPause = setInterval(main, 25);
+}
+
 document.addEventListener('keydown',function(event){
     if(event.code == 'Space'){
-        pauseFlag != pauseFlag;
+        pauseFlag = !pauseFlag;
         event.preventDefault();
-        console.log(pauseFlag + "Это pauseFlag")
         if(pauseFlag){
             clearInterval(idForPause);
         }else{
-            ;
+            idForPause = setInterval(main, 25);
         }
     }
 })
