@@ -64,7 +64,7 @@ function stopPlateMotion(){
 }
 
 // будет менять направление (выдает измененные дельта х и у) - должна запускаться каждую итерацию фукции движения меча
-function brickBounce(xspeed, yspeed, bounceFlag = false){
+function brickBounce(xspeed, yspeed){
     let ball_y_cord = parseInt(ball.offsetTop);
     let ball_x_cord = parseInt(ball.offsetLeft);    
     let directionX = xspeed!=0 ? Math.abs(xspeed) / xspeed : 0;
@@ -108,69 +108,108 @@ function brickBounce(xspeed, yspeed, bounceFlag = false){
 
     if((directionX > 0) && (directionY > 0)){
         indicators = {
-            1 : point2,
-            'center' : point3, //center
-            3 : point4
+            1 : point2,// v levo
+            2 : point3, //center
+            3 : point4//v verh
         }
     }else if((directionX > 0) && (directionY < 0)){
         indicators = {
-            1 : point1,
-            'center' : point2,//center
-            3 : point3
+            1 : point1,//v niz
+            2 : point2,//center
+            3 : point3//v levo
         }
     }else if((directionX < 0) && (directionY > 0)){
         indicators = {
-            1 : point1,
-            'center' : point4,//center
-            3 : point3
+            1 : point3,//v pravo
+            2 : point4,//center
+            3 : point1// v verh
         }
     }else if((directionX < 0) && (directionY < 0)){
         indicators = {
-            1 : point4,
-            'center' : point1,//center
-            3 : point2
+            1 : point4, //v pravo
+            2 : point1,//center
+            3 : point2 //v niz
         }
     }
 
-    let ind1, ind2, ind3;
 
     if(((directionX!=0) && (directionY==0)) || ((directionX==0) && (directionY!=0))){
-        ind1 = document.querySelector('.indicator:nth-child(2)');
-        ind1.style.top = `${indicators[1].y}px`;
-        ind1.style.left = `${indicators[1].x}px`;
-        
-        ind2 = document.querySelector('.indicator:nth-child(3)');
-        ind2.style.top = `${indicators[2].y}px`;
-        ind2.style.left = `${indicators[2].x}px`;
+        let arrForFinding = document.elementsFromPoint(indicators[1].x, indicators[1].y);
+        let arrForFinding2 = document.elementsFromPoint(indicators[2].x, indicators[2].y);
+        let flagForFinding;
+        let flagForFinding2;
 
-        ind3 = document.querySelector('.indicator:nth-child(4)');
-        ind3.style.visibility = 'hidden';
+        for(let i of arrForFinding){
+            if( i.className=='brick') flagForFinding=true;
+        }
+        for(let i of arrForFinding2){
+            if( i.className=='brick') flagForFinding2=true;
+        }
 
-    }else{
-        ind1 = document.querySelector('.indicator:nth-child(2)');
-        ind1.style.top = `${indicators[1].y}px`;
-        ind1.style.left = `${indicators[1].x}px`;
-        
-        ind2 = document.querySelector('.indicator:nth-child(3)');
-        ind2.style.top = `${indicators["center"].y}px`;
-        ind2.style.left = `${indicators["center"].x}px`;
+        if(flagForFinding || flagForFinding2){
+            yspeed = yspeed * (-1);
+            return {
+                x : xspeed,
+                y : yspeed
+            };
+        }
+    }else if(xspeed){
+        let arrForFinding = document.elementsFromPoint(indicators[2].x+(ballSize*directionX*(-1)), indicators[2].y);
+        let arrForFinding2 = document.elementsFromPoint(indicators[2].x, indicators[2].y+(ballSize*directionY*(-1)));
+        let flagForFinding;
+        let flagForFinding2;
 
-        ind3 = document.querySelector('.indicator:nth-child(4)');
-        ind3.style.visibility = 'visible';
-        ind3.style.top = `${indicators[3].y}px`;
-        ind3.style.left = `${indicators[3].x}px`;
+        for(let i of arrForFinding){
+            if( i.className=='brick') flagForFinding=true;
+        }
+        for(let i of arrForFinding2){
+            if( i.className=='brick') flagForFinding2=true;
+        }
 
+        if(flagForFinding){
+            yspeed = yspeed * (-1);
+            return {
+                x : xspeed,
+                y : yspeed
+            };
+        }else{
+            xspeed = xspeed * (-1);
+            return {
+                x : xspeed,
+                y : yspeed
+            }
+        }
     }
-    
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    // let ind1, ind2, ind3;
 
+    // if(((directionX!=0) && (directionY==0)) || ((directionX==0) && (directionY!=0))){
+    //     ind1 = document.querySelector('.indicator:nth-child(2)');
+    //     ind1.style.top = `${indicators[1].y}px`;
+    //     ind1.style.left = `${indicators[1].x}px`;
+        
+    //     ind2 = document.querySelector('.indicator:nth-child(3)');
+    //     ind2.style.top = `${indicators[2].y}px`;
+    //     ind2.style.left = `${indicators[2].x}px`;
 
+    //     ind3 = document.querySelector('.indicator:nth-child(4)');
+    //     ind3.style.visibility = 'hidden';
 
+    // }else{
+    //     ind1 = document.querySelector('.indicator:nth-child(2)');
+    //     ind1.style.top = `${indicators[1].y}px`;
+    //     ind1.style.left = `${indicators[1].x}px`;
+        
+    //     ind2 = document.querySelector('.indicator:nth-child(3)');
+    //     ind2.style.top = `${indicators[2].y}px`;
+    //     ind2.style.left = `${indicators[2].x}px`;
 
-
-
-
-
+    //     ind3 = document.querySelector('.indicator:nth-child(4)');
+    //     ind3.style.visibility = 'visible';
+    //     ind3.style.top = `${indicators[3].y}px`;
+    //     ind3.style.left = `${indicators[3].x}px`;
+    // }
 }
 
 
@@ -265,11 +304,15 @@ function testMotion(){
             x : ball_x_cord + Math.trunc(ball.clientWidth / 2),
             y : ball_y_cord + Math.trunc(ball.clientHeight / 2),
         };
-        console.log(document.elementsFromPoint(ballCenter.x, ballCenter.y));
+        console.log((document.elementsFromPoint(ballCenter.x, ballCenter.y)));
     }
+
     ball.style.top = `${ball_y_cord + ySpeed}px`;
     ball.style.left = `${ball_x_cord + xSpeed}px`;
-    brickBounce(xSpeed, ySpeed);
+    
+    ySpeed = brickBounce(xSpeed, ySpeed).y;
+    xSpeed = brickBounce(xSpeed, ySpeed).x;
+    
 }
 
 
