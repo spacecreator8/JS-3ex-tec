@@ -57,7 +57,7 @@ input[type="text"]:focus{
 }
 input[type="submit"]{
     padding:10px;
-    border:5px solid rgb(38, 102, 32);
+    border:5px solid rgb(140, 180, 28);
     border-radius: 10px;
 
     color:rgb(230, 36, 36);
@@ -151,6 +151,85 @@ input[type="submit"]:focus{
 
     font-family: 'Workbench', sans-serif;
     font-size:20px;
+}
+.actualScr{
+    position:absolute;
+    top:615px;
+    left:130px;
+    font-size: 20px;
+}
+.actualScores{
+    position:absolute;
+    top:615px;
+    left:190px;
+    font-size: 20px;
+}
+.pauseTitle{
+    position:absolute;
+    top:200px;
+    left:350px;
+    
+    font-size: 120px;
+    opacity:0.95;
+    color: rgb(231, 124, 82);
+}
+.pauseTitle::before{
+    content:"PAUSE";
+    position:absolute;
+    top:5px;
+    left:2px;
+    
+    font-size: 120px;
+    opacity:0.75;
+    color: rgb(240, 36, 36);
+}
+.endGameScreen{
+    position: absolute;
+    left:-10000px;
+    z-index: 11;
+    width:1100px;
+    height:680px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items:center;
+    align-content: start;
+
+    margin:20px 0;
+
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.playersList{
+    position: relative;
+    top:-50px;
+    width:400px;
+    height:550px;
+
+    display:flex;
+    flex-flow: column;
+    align-content:space-evenly;
+
+    border:1px solid rgb(243, 243, 243);
+    border-radius: 10px;
+
+    background-color: rgb(140, 180, 28);
+}
+.winnersNames{
+    font-size: 18px;
+    padding:5px;
+    margin:0 30px;
+    border: 3px solid aliceblue;
+    border-radius: 5px;;
+}
+.winnersNames:nth-child(1){
+    margin-top:20px;
+}
+.redOutline{
+    border:3px solid rgb(230, 44, 44);
+}
+.withoutOutline{
+    border:1px solid transparent;
 }
 p{
     position:absolute;
