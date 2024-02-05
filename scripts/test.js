@@ -33,7 +33,7 @@ let playersDataBase = {
     'DOBPb|H9|':9999,
     'aaa':1320,
     'sss':1000,
-    'Igor':500,
+    'Player4':500,
     'Бабуля':1100,
     'Пращур':800,
     'Олежа BELGORODSKIY':10,
@@ -254,7 +254,11 @@ function main(){
         document.querySelector('.endGameScreen').style.top = `${-20}px`;
 
         //манипуляции с БД + сортировка игроков по очкам
-        actualScores>=preventScores ? playersDataBase[playername]=actualScores : playersDataBase[playername]=preventScores;
+        if(preventScores){
+            actualScores>=preventScores ? playersDataBase[playername]=actualScores : playersDataBase[playername]=preventScores;
+        }else{
+            playersDataBase[playername]=actualScores;
+        }
         let winnersNameArray = [];
         let winnersScoreArray=[];
         let temp, tempName;
@@ -313,7 +317,6 @@ function main(){
 
         //обработчик для кнопки "начать игру" расположенной в таблице результатов
         endStartGameButton = document.querySelector('.startGameButton');
-        console.log(endStartGameButton);
         endStartGameButton.addEventListener('click', function(event){
             startGameFlag=false;
             xSpeed=0;
@@ -322,6 +325,7 @@ function main(){
             ball.style.left = `${475}px`;
             plate.style.left='425px';
             lifes=3;
+            document.querySelector('.lifes').innerHTML=3;
             screen1.style.left=`${0}px`;
             while(winnersTable.firstChild){
                 winnersTable.removeChild(winnersTable.firstChild);
@@ -341,7 +345,7 @@ function main(){
 //==========================================================================================================================
 //==========================================================================================================================
 
-//буду удалять и добавлять обработчик
+//буду удалять и добавлять этот обработчик
 function pauseOrStart(event){
     if(event.code == 'Space'){
         if(!startGameFlag){
@@ -366,6 +370,7 @@ function pauseOrStart(event){
 
 
 //ввод имени + начало игры
+//если игрок не ввел имя, то оно задастся по умолчанию
 let player = document.getElementById('playernameForm');
 player.addEventListener('submit', function(event){
     event.preventDefault();
