@@ -123,8 +123,8 @@ input[type="submit"]:focus{
     display:inline-block;
     
     position:absolute;
-
-    border-radius:5px;
+    border:5px solid rgb(116, 153, 29);
+    border-radius:7px;
     margin:0;
     padding:0;
 
@@ -200,7 +200,6 @@ input[type="submit"]:focus{
     margin:20px 0;
 
     background-color: rgba(255, 255, 255, 0.5);
-    border:2px solid black;
 }
 .playersList{
     position: relative;
@@ -286,7 +285,7 @@ input[type="submit"]:focus{
     right:5px;
 
     font-size: 20px;
-    color:limegreen;
+    color:rgb(255, 30, 30);
 }
 p{
     position:absolute;

@@ -50,7 +50,7 @@ let endGameFlag=false;
 let winnersTable;
 let endStartGameButton;
 
-let ourTime=10;
+let ourTime=60;
 let minutes;
 let seconds;
 let timerId;
@@ -201,6 +201,19 @@ function main(){
         console.log(1);
     }
 
+
+    //проверка на наличие кирпичиков, если их нет, то сгенерировать новый
+    if(!(document.querySelector('.brick'))){
+        let randX = Math.trunc(Math.random()*890);;
+        let randY = Math.trunc(Math.random()*250);
+        let newBrick =document.createElement('div');
+        newBrick.className = 'brick';
+        document.querySelector('.main_box').insertAdjacentElement('afterbegin', newBrick);
+        newBrick.style.top=`${randY}px`;
+        newBrick.style.left=`${randX}px`;
+    }
+
+
     //проверка на столкновение с кирпичиками
     xSpeed>0 ? directionX=1 : directionX=(-1);
     ySpeed>0 ? directionY=1 : directionY=(-1);
@@ -222,7 +235,9 @@ function main(){
     arr1 = document.elementsFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y);
     for(let i of arr1){
         if(i.className == 'brick'){
+            document.elementFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y).remove();
             ySpeed*=(-1);
+            ourTime+=2;
             actualScores+=10;
             document.querySelector('.actualScores').innerHTML=actualScores;
             arr1.length = 0;
@@ -231,7 +246,9 @@ function main(){
     arr2 = document.elementsFromPoint(contactPoint.x, contactPoint.y+25*directionY*-1);
     for(let i of arr2){
         if(i.className == 'brick'){
+            document.elementFromPoint(contactPoint.x, contactPoint.y+25*directionY*-1).remove();
             xSpeed*=(-1);
+            ourTime+=2;
             actualScores+=10;
             document.querySelector('.actualScores').innerHTML=actualScores;
             arr2.length = 0;
@@ -240,7 +257,9 @@ function main(){
     arr3 = document.elementsFromPoint(contactPoint.x+5*directionX*(-1), contactPoint.y);
     for(let i of arr1){
         if(i.className == 'brick'){
+            document.elementFromPoint(contactPoint.x+5*directionX*(-1), contactPoint.y).remove();
             ySpeed*=(-1);
+            ourTime+=2;
             actualScores+=10;
             document.querySelector('.actualScores').innerHTML=actualScores;
             arr3.length = 0;
@@ -249,13 +268,16 @@ function main(){
     arr4 = document.elementsFromPoint(contactPoint.x, contactPoint.y+5*directionY*(-1));
     for(let i of arr2){
         if(i.className == 'brick'){
+            document.elementFromPoint(contactPoint.x, contactPoint.y+5*directionY*(-1)).remove();
             xSpeed*=(-1);
+            ourTime+=2;
             actualScores+=10;
             document.querySelector('.actualScores').innerHTML=actualScores;
             arr4.length = 0;
         } 
     }
-
+    console.log('Y = ' + ballYCord);
+    console.log('X = ' + ballXCord);
     //изменение положения
     ball.style.top = `${ballYCord + ySpeed}px`;
     ball.style.left = `${ballXCord + xSpeed}px`;
@@ -341,7 +363,7 @@ function main(){
             ball.style.left = `${475}px`;
             plate.style.left='425px';
             lifes=3;
-            ourTime=10;
+            ourTime=60;
             document.querySelector('.lifes').innerHTML=3;
             
             screen1.style.left=`${0}px`;
@@ -422,7 +444,6 @@ function pauseOrStart(event){
                         }
                     }, 1000)
                 }
-
                 document.querySelector('.pauseTitle').remove();
             }
         }
@@ -444,7 +465,7 @@ player.addEventListener('submit', function(event){
     }
     actualScores=0;
     screen1.style.left = `${-9999}px`;
-    document.querySelector('.main_box').insertAdjacentHTML('beforeend',`<div class="time">TIME&nbsp</div><div class="timer">01&nbsp:00</div>`);
+    document.querySelector('.main_box').insertAdjacentHTML('beforeend',`<div class="time">TIME&nbsp</div><div class="timer"></div>`);
     if(playername == 'terter'){
         document.querySelector('.main_box').insertAdjacentHTML('beforeend','<div class="modeTest">mode:Test</div>');
     }
@@ -458,5 +479,7 @@ player.addEventListener('submit', function(event){
         document.querySelector('.terter').innerHTML=`${playername}`;
     }else{
         document.querySelector('.nickname').innerHTML=`${playername}`;
-    }    
+    }
+
 })
+
