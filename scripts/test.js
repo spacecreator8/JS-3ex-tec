@@ -1,7 +1,7 @@
 let ball = document.querySelector('.ball');
 let plate = document.querySelector('.plate');
 
-let startGameFlag = false;
+let startGameFlag = false;//что бы войти в блок кода, где активируется платформа
 let pauseFlag = false;
 let idForPause;
 
@@ -42,13 +42,16 @@ let playername;
 let preventScores;
 let actualScr = document.querySelector('.actualScr').innerHTML;
 let actualScores = document.querySelector('.actualScores').innerHTML;
-let screen1;
+let screen1 = document.querySelector('.startScreen');
 let screen2 = document.querySelector('.main_box');
 let lifes = document.querySelector('.lifes').innerHTML;
 
 let endGameFlag=false;
 let winnersTable;
 let endStartGameButton;
+
+let ourTime=10;
+let timerId;
 
 function plateMotion(event){ // логику подсмотрел
     if(!pauseFlag){
@@ -112,6 +115,10 @@ function bounceMotionChange(angle, ballSpeed, positivityX){
     }
 }
 
+
+
+
+
 //проверка на столкновение с -стенами, -платформой, -кирпичиками
 //изменение xSpeed, ySpeed
 //изменение положениия
@@ -126,21 +133,23 @@ function main(){
     }
 
     //проверка на столкновение со стенами
-    if(ballCenter.y+25 >= 600){
+    if(ballCenter.y+25 > 600){
         ySpeed *=(-1);
         ball.style.top = `${ballYCord + ySpeed}px`;
-        lifes--;
-        document.querySelector('.lifes').innerHTML=lifes;
+        if(playername!='terter'){
+            lifes--;
+            document.querySelector('.lifes').innerHTML=lifes;
+        } 
         if(lifes==0){
             endGameFlag=true;
         }
-    }else if(ballCenter.y-25 <= 0){
+    }else if(ballCenter.y-25 < 0){
         ySpeed *=(-1);
         ball.style.top = `${ballYCord + ySpeed}px`;
-    }else if(ballCenter.x+25 >= 1000){
+    }else if(ballCenter.x+25 > 1000){
         xSpeed *=(-1);
         ball.style.left = `${ballXCord + xSpeed}px`;
-    }else if(ballCenter.x-25 <=0){
+    }else if(ballCenter.x-25 <0){
         xSpeed *=(-1);
         ball.style.left = `${ballXCord + xSpeed}px`;
     }
@@ -248,10 +257,12 @@ function main(){
     ball.style.left = `${ballXCord + xSpeed}px`;
 
     //отсановка игры если нет жизней
-    if(lifes==0){
+    if(endGameFlag){
         clearInterval(idForPause);
         document.querySelector('.endGameScreen').style.left = `${0}px`;
         document.querySelector('.endGameScreen').style.top = `${-20}px`;
+        document.removeEventListener('keydown', plateMotion);
+        document.removeEventListener('keyup', stopPlateMotion);
 
         //манипуляции с БД + сортировка игроков по очкам
         if(preventScores){
@@ -319,14 +330,18 @@ function main(){
         endStartGameButton = document.querySelector('.startGameButton');
         endStartGameButton.addEventListener('click', function(event){
             startGameFlag=false;
+            endGameFlag=false;
             xSpeed=0;
             ySpeed=ballSpeed;
             ball.style.top= `${500}px`;
             ball.style.left = `${475}px`;
             plate.style.left='425px';
             lifes=3;
+            ourTime=60;
             document.querySelector('.lifes').innerHTML=3;
+            
             screen1.style.left=`${0}px`;
+            screen1.style.top='0px';
             while(winnersTable.firstChild){
                 winnersTable.removeChild(winnersTable.firstChild);
             }
@@ -334,7 +349,6 @@ function main(){
             endGameScreen.style.left='-9999px';
             pauseFlag=false;
             document.removeEventListener('keydown', pauseOrStart);
-            console.log(playersDataBase);
         })
 
     }
@@ -345,7 +359,7 @@ function main(){
 //==========================================================================================================================
 //==========================================================================================================================
 
-//буду удалять и добавлять этот обработчик
+//буду удалять и добавлять этот обработчик чтобы пробел работал только во время игры
 function pauseOrStart(event){
     if(event.code == 'Space'){
         if(!startGameFlag){
@@ -354,14 +368,40 @@ function pauseOrStart(event){
             document.addEventListener('keyup', stopPlateMotion);
             startGameFlag=true;
             idForPause = setInterval(main, 25);
+            document.querySelector('.timer').remove();
+            //таймер будет работать если это не тест
+            if(playername!='terter'){
+                document.querySelector('.timer').remove();
+                timerId = setInterval(function(){
+                    ourTime-=1;
+                    document.querySelector('.timer').outerHTML=`<div class="timer">${ourTime}</div>`;
+                    if(ourTime==0){
+                        endGameFlag=true; 
+                        clearInterval(timerId);
+                    }
+                }, 1000)
+            }
+            
         }else{
             event.preventDefault();
             pauseFlag = !pauseFlag;
             if(pauseFlag){
                 clearInterval(idForPause);
+                clearInterval(timerId);
                 screen2.insertAdjacentHTML('beforeend',`<div class="pauseTitle">PAUSE</div>`);
             }else if(!endGameFlag){
                 idForPause = setInterval(main, 25);
+                if(playername!='terter'){
+                    timerId = setInterval(function(){
+                        ourTime-=1;
+                        document.querySelector('.timer').outerHTML=`<div class="timer">${ourTime}</div>`;
+                        if(ourTime==0){
+                            endGameFlag=true; 
+                            clearInterval(timerId);
+                        }
+                    }, 1000)
+                }
+                
                 document.querySelector('.pauseTitle').remove();
             }
         }
@@ -370,7 +410,6 @@ function pauseOrStart(event){
 
 
 //ввод имени + начало игры
-//если игрок не ввел имя, то оно задастся по умолчанию
 let player = document.getElementById('playernameForm');
 player.addEventListener('submit', function(event){
     event.preventDefault();
@@ -381,12 +420,22 @@ player.addEventListener('submit', function(event){
         playersDataBase[playername]=0;
     }
     actualScores=0;
-    screen1 = document.querySelector('.startScreen');
     screen1.style.left = `${-9999}px`;
+    document.querySelector('.main_box').insertAdjacentHTML('beforeend','<div class="time">TIME:</div><div class="timer">60</div>');
+    if(playername == 'terter'){
+        document.querySelector('.main_box').insertAdjacentHTML('beforeend','<div class="modeTest">mode:Test</div>');
+    }
 
     //пауза при нажатии на пробел + запуск игры
     //удаляю и запускаю каждый раз что бы пробел работал только во время игры
     document.addEventListener('keydown',pauseOrStart);
+    
+    if(playername=='terter'){
+        document.querySelector('.nickname').outerHTML='<div class="terter"></div>';
+        document.querySelector('.terter').innerHTML=`${playername}`;
+    }else{
+        document.querySelector('.nickname').innerHTML=`${playername}`;
+    }    
 })
 
 
