@@ -19,6 +19,8 @@ let xSpeed = 0;
 
 let ballYCord = ball.offsetTop;
 let ballXCord = ball.offsetLeft;
+let oldBallXCord;
+let oldBallYCord;
 let ballCenter = {
     x : ballXCord + Math.trunc(ball.clientWidth / 2),
     y : ballYCord + Math.trunc(ball.clientHeight / 2),
@@ -127,6 +129,8 @@ function bounceMotionChange(angle, ballSpeed, positivityX){
 //обработка конца игры + таблица лидеров
 function main(){
     //обновление кординат
+    oldBallXCord = ballXCord;
+    oldBallYCord = ballYCord;
     ballYCord = parseInt(ball.offsetTop);
     ballXCord = parseInt(ball.offsetLeft);
     ballCenter = {
@@ -222,15 +226,15 @@ function main(){
         y : ballCenter.y + 25*(directionY)
     }
     //потом удалить
-    let ind = document.querySelector('.indicator1');
-    ind.style.top = `${contactPoint.y}px`;
-    ind.style.left = `${contactPoint.x}px`;
-    let ind2 = document.querySelector('.indicator2');
-    ind2.style.top = `${contactPoint.y}px`;
-    ind2.style.left = `${contactPoint.x+50*directionX*(-1)}px`;
-    let ind3 = document.querySelector('.indicator3');
-    ind3.style.top = `${contactPoint.y+50*directionY*(-1)}px`;
-    ind3.style.left = `${contactPoint.x}px`;
+    // let ind = document.querySelector('.indicator1');
+    // ind.style.top = `${contactPoint.y}px`;
+    // ind.style.left = `${contactPoint.x}px`;
+    // let ind2 = document.querySelector('.indicator2');
+    // ind2.style.top = `${contactPoint.y}px`;
+    // ind2.style.left = `${contactPoint.x+50*directionX*(-1)}px`;
+    // let ind3 = document.querySelector('.indicator3');
+    // ind3.style.top = `${contactPoint.y+50*directionY*(-1)}px`;
+    // ind3.style.left = `${contactPoint.x}px`;
 
     arr1 = document.elementsFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y);
     for(let i of arr1){
@@ -377,6 +381,14 @@ function main(){
             document.removeEventListener('keydown', pauseOrStart);
         })
 
+    }
+    //пробую пофиксить баг с координатами 0, 0
+    if((ball.offsetLeft==0)&&(ball.offsetTop==0)){
+        console.log("Проверка на нули сработала.");
+        ballXCord = oldBallYCord;
+        ballYCord = oldBallXCord;
+        ball.style.top = '100px';
+        ball.style.left = '300px';
     }
 }
 

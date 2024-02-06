@@ -129,15 +129,92 @@ input[type="submit"]:focus{
     padding:0;
 
 }
-.brick:nth-child(5){
-    top:150px;
-    left:200px;
+#brick1{
+    top:20px;
+    left:30px;
 }
-.brick:nth-child(6){
-    
-    top:300px;
-    left:440px;
+#brick2{
+    top:80px;
+    left:30px;
 }
+#brick3{
+    top:140px;
+    left:30px;
+}
+#brick4{
+    top:200px;
+    left:30px;
+}
+#brick5{
+    top:20px;
+    left:140px;
+}
+#brick6{
+    top:80px;
+    left:140px;
+}
+#brick7{
+    top:140px;
+    left:140px;
+}
+#brick8{
+    top:200px;
+    left:140px;
+}
+#brick8{
+    top:20px;
+    left:250px;
+}
+#brick9{
+    top:80px;
+    left:250px;
+}
+#brick10{
+    top:20px;
+    left:360px;
+}
+#brick11{
+    top:20px;
+    right:30px;
+}
+#brick12{
+    top:80px;
+    right:30px;
+}
+#brick13{
+    top:140px;
+    right:30px;
+}
+#brick14{
+    top:200px;
+    right:30px;
+}
+#brick15{
+    top:20px;
+    right:140px;
+}
+#brick16{
+    top:80px;
+    right:140px;
+}
+#brick17{
+    top:140px;
+    right:140px;
+}
+#brick18{
+    top:20px;
+    right:360px;
+}
+#brick19{
+    top:20px;
+    right:250px;
+}
+#brick20{
+    top:80px;
+    right:250px;
+}
+
+
 .heart{
     position:absolute;
     left:0px;
