@@ -276,14 +276,14 @@ input[type="submit"]:focus{
 .nickname{
     position:absolute;
     top:615px;
-    right:-5px;
+    right:5px;
 
     font-size: 20px;
 }
 .terter{
     position:absolute;
     top:615px;
-    right:-5px;
+    right:5px;
 
     font-size: 20px;
     color:limegreen;

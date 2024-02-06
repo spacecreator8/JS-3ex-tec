@@ -51,6 +51,8 @@ let winnersTable;
 let endStartGameButton;
 
 let ourTime=10;
+let minutes;
+let seconds;
 let timerId;
 
 function plateMotion(event){ // логику подсмотрел
@@ -142,6 +144,8 @@ function main(){
         } 
         if(lifes==0){
             endGameFlag=true;
+            clearInterval(timerId);
+            document.querySelector('.timer').remove();
         }
     }else if(ballCenter.y-25 < 0){
         ySpeed *=(-1);
@@ -337,7 +341,7 @@ function main(){
             ball.style.left = `${475}px`;
             plate.style.left='425px';
             lifes=3;
-            ourTime=60;
+            ourTime=10;
             document.querySelector('.lifes').innerHTML=3;
             
             screen1.style.left=`${0}px`;
@@ -368,20 +372,28 @@ function pauseOrStart(event){
             document.addEventListener('keyup', stopPlateMotion);
             startGameFlag=true;
             idForPause = setInterval(main, 25);
-            document.querySelector('.timer').remove();
+            // document.querySelector('.timer').remove();
             //таймер будет работать если это не тест
             if(playername!='terter'){
                 document.querySelector('.timer').remove();
                 timerId = setInterval(function(){
                     ourTime-=1;
-                    document.querySelector('.timer').outerHTML=`<div class="timer">${ourTime}</div>`;
+                    minutes = String(Math.trunc(ourTime/60));
+                    if(minutes.length==1){
+                        minutes='0'+minutes;
+                    }
+                    seconds=String(ourTime%60);
+                    if(seconds.length==1){
+                        seconds='0'+seconds;
+                    }
+                    document.querySelector('.timer').outerHTML=`<div class="timer">${minutes}&nbsp:${seconds}</div>`;
                     if(ourTime==0){
                         endGameFlag=true; 
                         clearInterval(timerId);
+                        document.querySelector('.timer').remove();
                     }
                 }, 1000)
             }
-            
         }else{
             event.preventDefault();
             pauseFlag = !pauseFlag;
@@ -394,19 +406,30 @@ function pauseOrStart(event){
                 if(playername!='terter'){
                     timerId = setInterval(function(){
                         ourTime-=1;
-                        document.querySelector('.timer').outerHTML=`<div class="timer">${ourTime}</div>`;
+                        minutes = String(Math.trunc(ourTime/60));
+                        if(minutes.length==1){
+                            minutes='0'+minutes;
+                        }
+                        seconds=String(ourTime%60);
+                        if(seconds.length==1){
+                            seconds='0'+seconds;
+                        }
+                        document.querySelector('.timer').outerHTML=`<div class="timer">${minutes}&nbsp:${seconds}</div>`;
                         if(ourTime==0){
                             endGameFlag=true; 
                             clearInterval(timerId);
+                            document.querySelector('.timer').remove();
                         }
                     }, 1000)
                 }
-                
+
                 document.querySelector('.pauseTitle').remove();
             }
         }
     }
 }
+
+
 
 
 //ввод имени + начало игры
@@ -421,7 +444,7 @@ player.addEventListener('submit', function(event){
     }
     actualScores=0;
     screen1.style.left = `${-9999}px`;
-    document.querySelector('.main_box').insertAdjacentHTML('beforeend','<div class="time">TIME:</div><div class="timer">60</div>');
+    document.querySelector('.main_box').insertAdjacentHTML('beforeend',`<div class="time">TIME&nbsp</div><div class="timer">01&nbsp:00</div>`);
     if(playername == 'terter'){
         document.querySelector('.main_box').insertAdjacentHTML('beforeend','<div class="modeTest">mode:Test</div>');
     }
@@ -437,30 +460,3 @@ player.addEventListener('submit', function(event){
         document.querySelector('.nickname').innerHTML=`${playername}`;
     }    
 })
-
-
-// //пауза при нажатии на пробел + запуск игры
-// document.addEventListener('keydown',function(event){
-//     if(event.code == 'Space'){
-//         if(!startGameFlag){
-//             //что бы двигалась платформа
-//             document.addEventListener('keydown', plateMotion);
-//             document.addEventListener('keyup', stopPlateMotion);
-//             startGameFlag=true;
-//             idForPause = setInterval(main, 25);
-//         }else{
-//             event.preventDefault();
-//             pauseFlag = !pauseFlag;
-//             if(pauseFlag){
-//                 clearInterval(idForPause);
-//                 screen2.insertAdjacentHTML('beforeend',`<div class="pauseTitle">PAUSE</div>`);
-//             }else if(!endGameFlag){
-//                 idForPause = setInterval(main, 25);
-//                 document.querySelector('.pauseTitle').remove();
-//             }
-//         }
-//     }
-// })
-
-
-
