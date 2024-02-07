@@ -1,6 +1,9 @@
 let ball = document.querySelector('.ball');
 let plate = document.querySelector('.plate');
 
+let brickYCord=[20,80,140,200,20,80,140,20,80,20,20,80,140,200,20,80,140,20,80,20];
+let brickXCord=[30,30,30,30,140,140,140,250,250,360,30,30,30,30,140,140,140,250,250,360];
+
 let startGameFlag = false;//что бы войти в блок кода, где активируется платформа
 let pauseFlag = false;
 let idForPause;
@@ -120,9 +123,6 @@ function bounceMotionChange(angle, ballSpeed, positivityX){
 }
 
 
-
-
-
 //проверка на столкновение с -стенами, -платформой, -кирпичиками
 //изменение xSpeed, ySpeed
 //изменение положениия
@@ -131,8 +131,10 @@ function main(){
     //обновление кординат
     oldBallXCord = ballXCord;
     oldBallYCord = ballYCord;
-    ballYCord = parseInt(ball.offsetTop);
-    ballXCord = parseInt(ball.offsetLeft);
+    
+    
+    ballYCord = ball.offsetTop;
+    ballXCord = ball.offsetLeft;
     ballCenter = {
         x : ballXCord + Math.trunc(ball.clientWidth / 2),
         y : ballYCord + Math.trunc(ball.clientHeight / 2),
@@ -215,6 +217,9 @@ function main(){
         document.querySelector('.main_box').insertAdjacentElement('afterbegin', newBrick);
         newBrick.style.top=`${randY}px`;
         newBrick.style.left=`${randX}px`;
+        actualScores+=10;
+        delete randX;
+        delete randY;
     }
 
 
@@ -225,17 +230,7 @@ function main(){
         x : ballCenter.x + 25*(directionX),
         y : ballCenter.y + 25*(directionY)
     }
-    //потом удалить
-    // let ind = document.querySelector('.indicator1');
-    // ind.style.top = `${contactPoint.y}px`;
-    // ind.style.left = `${contactPoint.x}px`;
-    // let ind2 = document.querySelector('.indicator2');
-    // ind2.style.top = `${contactPoint.y}px`;
-    // ind2.style.left = `${contactPoint.x+50*directionX*(-1)}px`;
-    // let ind3 = document.querySelector('.indicator3');
-    // ind3.style.top = `${contactPoint.y+50*directionY*(-1)}px`;
-    // ind3.style.left = `${contactPoint.x}px`;
-
+    
     arr1 = document.elementsFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y);
     for(let i of arr1){
         if(i.className == 'brick'){
@@ -280,8 +275,8 @@ function main(){
             arr4.length = 0;
         } 
     }
-    console.log('Y = ' + ballYCord);
-    console.log('X = ' + ballXCord);
+    // console.log('Y = ' + ballYCord);
+    // console.log('X = ' + ballXCord);
     //изменение положения
     ball.style.top = `${ballYCord + ySpeed}px`;
     ball.style.left = `${ballXCord + xSpeed}px`;
@@ -369,6 +364,7 @@ function main(){
             lifes=3;
             ourTime=60;
             document.querySelector('.lifes').innerHTML=3;
+            document.querySelector('.actualScores').innerHTML=0;
             
             screen1.style.left=`${0}px`;
             screen1.style.top='0px';
@@ -379,16 +375,91 @@ function main(){
             endGameScreen.style.left='-9999px';
             pauseFlag=false;
             document.removeEventListener('keydown', pauseOrStart);
+
+            while(document.querySelector('.brick')){
+                document.querySelector('.brick').remove();
+                console.log("Удалили кирпич");
+            }
+
+            for(let i=0; i<brickYCord.length;i++){
+                let creatingBrick = document.createElement('div');
+                creatingBrick.className='brick';
+                creatingBrick.id = 'brick'+i;
+                creatingBrick.style.top = `${brickYCord[i]}px`;
+                if(i<10){
+                    creatingBrick.style.left = `${brickXCord[i]}px`;
+                }else{
+                    creatingBrick.style.right = `${brickXCord[i]}px`;
+                }
+                console.log("Создали кирпич");
+                document.querySelector('.main_box').insertAdjacentElement('afterbegin',creatingBrick);
+            }
+            document.querySelector('#brick10').style.left = '890px';
+
         })
 
-    }
+    }   
     //пробую пофиксить баг с координатами 0, 0
     if((ball.offsetLeft==0)&&(ball.offsetTop==0)){
         console.log("Проверка на нули сработала.");
-        ballXCord = oldBallYCord;
-        ballYCord = oldBallXCord;
-        ball.style.top = '100px';
-        ball.style.left = '300px';
+        clearInterval(idForPause);
+        ball.remove();
+        ball = document.createElement('div');
+        ball.className = 'ball';
+        document.querySelector('.main_box').insertAdjacentElement('beforebegin', ball);
+        ball = document.querySelector('.ball');
+        ball.style.top = `${oldBallYCord}px`;
+        ball.style.left = `${oldBallXCord }px`;
+        idForPause = setInterval(main, 25);
+        
+        arr1 = document.elementsFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y);
+        for(let i of arr1){
+            if(i.className == 'brick'){
+                document.elementFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y).remove();
+                
+                console.log("Проверка на попадание по кирпичу");    
+                ourTime+=2;
+                actualScores+=10;
+                document.querySelector('.actualScores').innerHTML=actualScores;
+                arr1.length = 0;
+            }
+        }
+        arr2 = document.elementsFromPoint(contactPoint.x, contactPoint.y+25*directionY*-1);
+        for(let i of arr2){
+            if(i.className == 'brick'){
+                document.elementFromPoint(contactPoint.x, contactPoint.y+25*directionY*-1).remove();
+                
+                console.log("Проверка на попадание по кирпичу");
+                ourTime+=2;
+                actualScores+=10;
+                document.querySelector('.actualScores').innerHTML=actualScores;
+                arr2.length = 0;
+            } 
+        }
+        arr3 = document.elementsFromPoint(contactPoint.x+5*directionX*(-1), contactPoint.y);
+        for(let i of arr1){
+            if(i.className == 'brick'){
+                document.elementFromPoint(contactPoint.x+5*directionX*(-1), contactPoint.y).remove();
+                
+                console.log("Проверка на попадание по кирпичу");
+                ourTime+=2;
+                actualScores+=10;
+                document.querySelector('.actualScores').innerHTML=actualScores;
+                arr3.length = 0;
+            }
+        }
+        arr4 = document.elementsFromPoint(contactPoint.x, contactPoint.y+5*directionY*(-1));
+        for(let i of arr2){
+            if(i.className == 'brick'){
+                document.elementFromPoint(contactPoint.x, contactPoint.y+5*directionY*(-1)).remove();
+                console.log("Проверка на попадание по кирпичу");
+                
+                ourTime+=2;
+                actualScores+=10;
+                document.querySelector('.actualScores').innerHTML=actualScores;
+                arr4.length = 0;
+            } 
+        }
     }
 }
 
@@ -400,8 +471,10 @@ function main(){
 //буду удалять и добавлять этот обработчик чтобы пробел работал только во время игры
 function pauseOrStart(event){
     if(event.code == 'Space'){
+        
         if(!startGameFlag){
             //что бы двигалась платформа
+            
             document.addEventListener('keydown', plateMotion);
             document.addEventListener('keyup', stopPlateMotion);
             startGameFlag=true;
