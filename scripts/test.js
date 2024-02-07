@@ -1,6 +1,7 @@
 let ball = document.querySelector('.ball');
 let plate = document.querySelector('.plate');
 
+//для будущей генерации кирпичей при новой игре
 let brickYCord=[20,80,140,200,20,80,140,20,80,20,20,80,140,200,20,80,140,20,80,20];
 let brickXCord=[30,30,30,30,140,140,140,250,250,360,30,30,30,30,140,140,140,250,250,360];
 
@@ -22,7 +23,7 @@ let xSpeed = 0;
 
 let ballYCord = ball.offsetTop;
 let ballXCord = ball.offsetLeft;
-let oldBallXCord;
+let oldBallXCord;//нужны чтобы пофиксить баг с телепортацией мяча на 0, 0
 let oldBallYCord;
 let ballCenter = {
     x : ballXCord + Math.trunc(ball.clientWidth / 2),
@@ -36,11 +37,11 @@ let playersDataBase = {
     '123':810,
     'VitekVasyan':700,
     'DOBPb|H9|':9999,
-    'aaa':1320,
-    'sss':1000,
+    'aaa':320,
+    'sss':100,
     'Player4':500,
-    'Бабуля':1100,
-    'Пращур':800,
+    'Бабуля':110,
+    'Пращур':600,
     'Олежа BELGORODSKIY':10,
 }
 let playername;
@@ -99,10 +100,9 @@ function plateMotion(event){ // логику подсмотрел
                     plate.style.left = `${plateCoord + plateSpeed}px`;
                 }    
             }      
-        }, 40);
-    
+        }, 40);    
     }
-    }
+}
 
 
 function stopPlateMotion(){
@@ -230,7 +230,7 @@ function main(){
         x : ballCenter.x + 25*(directionX),
         y : ballCenter.y + 25*(directionY)
     }
-    
+
     arr1 = document.elementsFromPoint(contactPoint.x+25*directionX*-1, contactPoint.y);
     for(let i of arr1){
         if(i.className == 'brick'){
@@ -275,8 +275,7 @@ function main(){
             arr4.length = 0;
         } 
     }
-    // console.log('Y = ' + ballYCord);
-    // console.log('X = ' + ballXCord);
+
     //изменение положения
     ball.style.top = `${ballYCord + ySpeed}px`;
     ball.style.left = `${ballXCord + xSpeed}px`;
@@ -376,11 +375,12 @@ function main(){
             pauseFlag=false;
             document.removeEventListener('keydown', pauseOrStart);
 
+            //перед генерацией кирпичей для новой игры нужно удалить старые
             while(document.querySelector('.brick')){
                 document.querySelector('.brick').remove();
                 console.log("Удалили кирпич");
             }
-
+            //генерация новых кирпичей
             for(let i=0; i<brickYCord.length;i++){
                 let creatingBrick = document.createElement('div');
                 creatingBrick.className='brick';
@@ -395,9 +395,7 @@ function main(){
                 document.querySelector('.main_box').insertAdjacentElement('afterbegin',creatingBrick);
             }
             document.querySelector('#brick10').style.left = '890px';
-
         })
-
     }   
     //пробую пофиксить баг с координатами 0, 0
     if((ball.offsetLeft==0)&&(ball.offsetTop==0)){
@@ -536,8 +534,6 @@ function pauseOrStart(event){
 }
 
 
-
-
 //ввод имени + начало игры
 let player = document.getElementById('playernameForm');
 player.addEventListener('submit', function(event){
@@ -565,6 +561,5 @@ player.addEventListener('submit', function(event){
     }else{
         document.querySelector('.nickname').innerHTML=`${playername}`;
     }
-
 })
 
