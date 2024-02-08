@@ -12,6 +12,8 @@ body{
     position:relative;
     display:flex;
     margin:auto;
+
+    overflow: hidden;
 }
 .startScreen{
     z-index: 15;

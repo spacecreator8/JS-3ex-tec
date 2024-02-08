@@ -36,7 +36,7 @@ let playersDataBase = {
     '@@@ANIGIL9TOP@@@':990,
     '123':810,
     'VitekVasyan':700,
-    'DOBPb|H9|':9999,
+    'DOBPb|H9|':9990,
     'aaa':320,
     'sss':100,
     'Player4':500,
@@ -172,8 +172,8 @@ function main(){
             positivityX = Math.abs(xSpeed)/ xSpeed;
         }
         console.log(3);
-        xSpeed = bounceMotionChange(30, ballSpeed, positivityX).x;
-        ySpeed = bounceMotionChange(30, ballSpeed, positivityX).y*(-1);
+        xSpeed = bounceMotionChange(40, ballSpeed, positivityX).x;
+        ySpeed = bounceMotionChange(40, ballSpeed, positivityX).y*(-1);
     }
     else if((ballCenter.y+25 >= plate.offsetTop)&&((ballCenter.x>=plate.offsetLeft+120)&&(ballCenter.x<=plate.offsetLeft+170))){
         if (xSpeed == 0){
@@ -182,8 +182,8 @@ function main(){
             positivityX = Math.abs(xSpeed)/ xSpeed;
         }
         console.log(3);
-        xSpeed = bounceMotionChange(30, ballSpeed, positivityX).x;
-        ySpeed = bounceMotionChange(30, ballSpeed, positivityX).y*(-1);
+        xSpeed = bounceMotionChange(40, ballSpeed, positivityX).x;
+        ySpeed = bounceMotionChange(40, ballSpeed, positivityX).y*(-1);
     }else if((ballCenter.y+25 >= plate.offsetTop)&&(ballCenter.x>=plate.offsetLeft+30)&&(ballCenter.x<=plate.offsetLeft+60)){
         if (xSpeed == 0){
             positivityX = (-1);
@@ -191,8 +191,8 @@ function main(){
             positivityX = Math.abs(xSpeed)/ xSpeed;
         }
         console.log(2);
-        xSpeed = bounceMotionChange(60, ballSpeed, positivityX).x;
-        ySpeed = bounceMotionChange(60, ballSpeed, positivityX).y*(-1);
+        xSpeed = bounceMotionChange(65, ballSpeed, positivityX).x;
+        ySpeed = bounceMotionChange(65, ballSpeed, positivityX).y*(-1);
     }else if((ballCenter.y+25 >= plate.offsetTop)&&(ballCenter.x>=plate.offsetLeft+90)&&(ballCenter.x<=plate.offsetLeft+120)){
         if (xSpeed == 0){
             positivityX = 1;
@@ -200,8 +200,8 @@ function main(){
             positivityX = Math.abs(xSpeed)/ xSpeed;
         }
         console.log(2);
-        xSpeed = bounceMotionChange(60, ballSpeed, positivityX).x;
-        ySpeed = bounceMotionChange(60, ballSpeed, positivityX).y*(-1);
+        xSpeed = bounceMotionChange(65, ballSpeed, positivityX).x;
+        ySpeed = bounceMotionChange(65, ballSpeed, positivityX).y*(-1);
     }else if((ballCenter.y+25 >= plate.offsetTop)&&((ballCenter.x>=plate.offsetLeft)&&(ballCenter.x<=plate.offsetLeft+150))){
         ySpeed*=(-1);
         console.log(1);
@@ -471,8 +471,7 @@ function pauseOrStart(event){
     if(event.code == 'Space'){
         
         if(!startGameFlag){
-            //что бы двигалась платформа
-            
+            //чтобы двигалась платформа
             document.addEventListener('keydown', plateMotion);
             document.addEventListener('keyup', stopPlateMotion);
             startGameFlag=true;
